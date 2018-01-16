@@ -1,5 +1,8 @@
 function initThreeScene(){
 
+    var animationRunning = false;
+    var pauseFlag = false;
+
     var scene = new THREE.Scene();
     var camera = new THREE.OrthographicCamera(
         window.innerWidth / -2,
@@ -34,9 +37,46 @@ function initThreeScene(){
         render();
     }
 
-    function render()
-    {
-        renderer.render(scene, camera);
+    function render(){
+        if(!animationRunning){
+            _render();
+        }
+    }
+
+    function startAnimation(callback){
+        console.log("starting animation");
+        if (animationRunning){
+            console.warn("animation already running");
+            return;
+        }
+        animationRunning = true;
+        _loop(function(){
+                callback();
+            _render();
+        });
+
+    }
+
+    function pauseAnimation(){
+        if (animationRunning) pauseFlag = true;
+    }
+
+    function _render() {
+        renderer.render(scene, camera);    
+    }
+
+    function _loop(callback){
+        callback();
+        requestAnimationFrame(function(){
+            if (pauseFlag) {
+                pauseFlag = false;
+                animationRunning = false;
+                console.log("pausing animation");
+                render();//for good measure
+                return;
+            }
+            _loop(callback);
+        });
     }
 
     return {
