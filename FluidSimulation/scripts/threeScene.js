@@ -16,7 +16,7 @@ function initThreeScene(){
     init();
 
     function init(){
-        var container = $("threeContainer");
+        var container = $("#threeContainer");
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.append(renderer.domElement);
 
@@ -82,6 +82,8 @@ function initThreeScene(){
     return {
         render: render,
         scene: scene,
-        camera: camera
+        camera: camera,
+        startAnimation: startAnimation,
+        pauseAnimation: pauseAnimation
     }
 }

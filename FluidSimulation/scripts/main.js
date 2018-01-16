@@ -6,6 +6,8 @@ var mouseCoordinates =  [0,0];
 var actualWidth, actualHeight;
 var body;
 
+var threeScene;
+
 window.onload = init;
 
 function init(){
@@ -26,6 +28,9 @@ function init(){
     canvas.onmouseenter = function (){
         mouseOut = false;
     }
+
+    threeScene = initThreeScene();
+
 }
 
 function onMouseMove(e){
