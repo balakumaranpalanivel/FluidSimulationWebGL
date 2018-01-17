@@ -8,6 +8,13 @@ var body;
 
 var threeScene;
 
+var numParticles = 160000;//perfect sq
+var particlesTextureDim = 400;//sqrt(numParticles)
+var particleData = new Float32Array(numParticles*4);//[position.x, position.y, velocity.x, velocity.y]
+var particles;
+var particlesVertices;
+var vectorLength = 2;//num floats to parse
+
 window.onload = init;
 
 function init(){
@@ -30,6 +37,14 @@ function init(){
     }
 
     threeScene = initThreeScene();
+
+    var geo = new THREE.BufferGeometry();
+    geo.dynamic = true;
+    particlesVertices = new Float32Array(numParticles*3);
+    geo.addAttribute('position', new THREE.BufferAttribute(particlesVertices, 3));
+    particles = new THREE.Points(geo, new THREE.PointsMaterial(
+        {size:0.04, opacity: 0.5, transparent: false, depthTest: false, color:0x000033}));
+    threeScene.scene.add(particles);
 
 }
 
