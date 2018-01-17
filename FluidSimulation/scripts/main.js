@@ -37,7 +37,7 @@ function init(){
     }
 
     threeScene = initThreeScene();
-
+    
     var geo = new THREE.BufferGeometry();
     geo.dynamic = true;
     particlesVertices = new Float32Array(numParticles*3);
