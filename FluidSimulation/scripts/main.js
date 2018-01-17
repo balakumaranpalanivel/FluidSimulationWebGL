@@ -62,11 +62,11 @@ function onMouseMove(e){
 }
 
 function onMouseDown(){
-
+    mouseEnable = true;
 }
 
 function onMouseUp(){
-
+    mouseEnable = false;
 }
 
 function onResize(){
