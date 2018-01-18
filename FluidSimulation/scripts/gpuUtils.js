@@ -22,4 +22,23 @@ function initGPUUtils(){
     if(!floatTextures){
         notSupported();
     }
+
+    var maxTexturesInFragmentShader = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+    console.log(maxTexturesInFragmentShader + " textures max");
+
+    function GPUUtils(){
+        this.reset();
+    }
+
+    GPUUtils.prototype.createProgram = function(programName, vertexShader, fragmentShader){
+        var programs = this.programs;
+        var program = programs[programName];
+        if(program){
+            console.warn("Progarm with Name already exists " + programName);
+            return;
+        }
+        program = shaderUtils.createProgramFromScripts(gl, vertexShader, fragmentShader);
+        gl.useProgram(program);
+        // Load vertex data
+    }
 }
