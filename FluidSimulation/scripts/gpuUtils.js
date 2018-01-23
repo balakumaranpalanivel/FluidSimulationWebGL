@@ -39,6 +39,48 @@ function initGPUUtils(){
         }
         program = shaderUtils.createProgramFromScripts(gl, vertexShader, fragmentShader);
         gl.useProgram(program);
-        // Load vertex data
-    }
+        // Load vertex 
+        shaderUtils.loadVertexData(gl, program);
+        programs[programName] = {
+            program: program,
+            uniforms: {}
+        };
+    };
+
+    GPUUtils.prototype.initTextureFromData = function(name, width, height, typeName, data, shouldReplace){
+        var texture = this.textures[name];
+        if(!shouldReplace && texture){
+            console.warn("already a texture with name " + name)
+            return;
+        }
+        texture = shaderUtils.makeTexture(gl, width, height, gl[typeName], data);
+        this.textures[name] = texture;
+    };
+
+    GPUUtils.prototype.initFrameBufferForTexture = function(textureName, shouldReplace){
+        if(!shouldReplace){
+            var frameBuffer = this.frameBuffers[textureName];
+            if(frameBuffer){
+                console.warn("Framebuffer already exists for texture " + textureName);
+                return;
+            }
+        }
+
+        var texture = this.textures[textureName];
+        if(!texture){
+            console.warn("texture " + textureName + " does not exist");
+            return;
+        }
+
+        frameBuffer = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHEMENT0, gl.TEXTURE_2D, texture, 0);
+
+        var check = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+        if(check != gl.FRAMEBUFFER_COMPLETE){
+            notSupported();
+        }
+
+        this.frameBuffers[textureName] = framebuffer;
+    };
 }
