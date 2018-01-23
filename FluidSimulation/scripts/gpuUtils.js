@@ -104,4 +104,69 @@ function initGPUUtils(){
             console.warn("no uniform for type " + type);
         }
     };
+
+    GPUUtils.prototype.setSize = function(width, height){
+        gl.viewport(0, 0, width, height);
+    };
+
+    GPUUtils.prototype.setProgram = function(programName){
+        gl.useProgram(this.programs[programName].program);
+    };
+
+    GPUUtils.prototype.step = function(programName, inputTextures, outputTexture){
+        gl.useProgram(this.programs[programName].program);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffers[outputTexture]);
+        for(var i=0; i<inputTextures.length; i++){
+            gl.activeTexture(gl.TEXTURE0 + i);
+            gl.bindTexture(gl.TEXTURE_2D, this.textures[inputTextures[i]]);
+        }
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    };
+
+    GPUUtils.prototype.stepBoundary = function(programName, inputTextures, outputTexture){
+        gl.useProgram(this.programs[programName].program);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffers[outputTexture]);
+        for(var i=0; i<inputTextures.length; i++){
+            gl.activeTexture(gl.TEXTURE0 + i);
+            gl.bindTexture(gl.TEXTURE_2D, this.textures[inputTextures[i]]);
+        }
+        gl.drawArrays(gl.LINES, 0, 8);
+    };
+
+    GPUUtils.prototype.swapTextures = function(texture1Name, texture2Name){
+        var temp = this.textures[texture1Name];
+        this.textures[texture1Name] = this.textures[texture2Name];
+        this.textures[texture2Name] = temp;
+        temp = this.frameBuffers[texture1Name];
+        this.frameBuffers[texture1Name] = this.frameBuffers[texture2Name];
+        this.frameBuffers[texture2Name] = temp;
+    };
+
+    GPUUtils.prototype.swap3Textures = function(texture1Name, texture2Name, texture3Name){
+        var temp = this.textures[texture3Name];
+        this.textures[texture3Name] = this.textures[texture2Name];
+        this.textures[texture2Name] = this.textures[texture1Name];
+        this.textures[texture1Name] = temp;
+        temp = this.frameBuffers[texture3Name];
+        this.frameBuffers[texture3Name] = this.frameBuffers[texture2Name];
+        this.frameBuffers[texture2Name] = this.frameBuffers[texture1Name];
+        this.frameBuffers[texture1Name] = temp;
+    };
+
+    GPUUtils.prototype.readyToRead = function(){
+        return gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE;
+    };
+
+    GPUUtils.prototype.readPixels = function(xMin, yMin, width, height, array){
+        gl.readPixels(xMin, yMin, width, height, gl.RGBA, gl.UNSIGNED_BYTE, array);
+    };
+
+    GPUUtils.prototype.reset = function(){
+        this.programs = {};
+        this.frameBuffers = {};
+        this.textures = {};
+        this.index = 0;
+    };
+
+    return new GPUUtils;
 }
