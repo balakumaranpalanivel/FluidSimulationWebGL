@@ -83,4 +83,25 @@ function initGPUUtils(){
 
         this.frameBuffers[textureName] = framebuffer;
     };
+
+    GPUUtils.prototype.setUniformForProgram = function(programName, name, val, type){
+        if(!this.programs[programName]){
+            console.warn("no program with name " + programName);
+            return;
+        }
+        var uniforms = this.programs[programName].uniforms;
+        var location = uniforms[name];
+        if(!location){
+            location = gl.getUniformLocation(this.programs[programName].program, name);
+            uniforms[name] = location;
+        }
+
+        if (type == "1f") gl.uniform1f(location, val);
+        else if (type == "2f") gl.uniform2f(location, val[0], val[1]);
+        else if (type == "3f") gl.uniform3f(location, val[0], val[1], val[2]);
+        else if (type == "1i") gl.uniform1i(location, val);
+        else {
+            console.warn("no uniform for type " + type);
+        }
+    };
 }
